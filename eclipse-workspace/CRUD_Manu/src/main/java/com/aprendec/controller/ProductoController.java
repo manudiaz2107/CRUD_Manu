@@ -104,63 +104,63 @@ public class ProductoController extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-	        throws ServletException, IOException {
-	    String opcion = request.getParameter("opcion");
-	    Date fechaActual = new Date();
+			throws ServletException, IOException {
+		String opcion = request.getParameter("opcion");
+		Date fechaActual = new Date();
 
-	    if (opcion.equals("guardar")) {
-	        ProductoDAO productoDAO = new ProductoDAO();
-	        Producto producto = new Producto();
-	        producto.setNombre(request.getParameter("nombre"));
-	        producto.setCantidad(Double.parseDouble(request.getParameter("cantidad")));
-	        producto.setPrecio(Double.parseDouble(request.getParameter("precio")));
-	        producto.setFechaCrear(new java.sql.Date(fechaActual.getTime()));
-	        
-	        try {
-	            // Comprobar si el producto ya existe
-	            if (productoDAO.existeProducto(producto.getNombre())) {
-	                request.setAttribute("error", "El producto ya existe.");
-	                RequestDispatcher requestDispatcher = request.getRequestDispatcher("/views/crear.jsp");
-	                requestDispatcher.forward(request, response);
-	                return; // Salimos de la función si el producto ya existe
-	            }
+		if (opcion.equals("guardar")) {
+			ProductoDAO productoDAO = new ProductoDAO();
+			Producto producto = new Producto();
+			producto.setNombre(request.getParameter("nombre"));
+			producto.setCantidad(Double.parseDouble(request.getParameter("cantidad")));
+			producto.setPrecio(Double.parseDouble(request.getParameter("precio")));
+			producto.setFechaCrear(new java.sql.Date(fechaActual.getTime()));
 
-	            if (productoDAO.guardar(producto)) {
-	                request.setAttribute("mensaje", "Producto guardado correctamente.");
-	            } else {
-	                request.setAttribute("error", "Error al guardar el producto.");
-	            }
-	            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/index.jsp");
-	            requestDispatcher.forward(request, response);
+			try {
+				// Comprobar si el producto ya existe
+				if (productoDAO.existeProducto(producto.getNombre())) {
+					request.setAttribute("error", "El producto ya existe.");
+					RequestDispatcher requestDispatcher = request.getRequestDispatcher("/views/crear.jsp");
+					requestDispatcher.forward(request, response);
+					return; // Salimos de la función si el producto ya existe
+				}
 
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            request.setAttribute("error", "Error en la base de datos.");
-	        }
-	    } else if (opcion.equals("editar")) {
-	        Producto producto = new Producto();
-	        ProductoDAO productoDAO = new ProductoDAO();
+				if (productoDAO.guardar(producto)) {
+					request.setAttribute("mensaje", "Producto guardado correctamente.");
+				} else {
+					request.setAttribute("error", "Error al guardar el producto.");
+				}
+				RequestDispatcher requestDispatcher = request.getRequestDispatcher("/index.jsp");
+				requestDispatcher.forward(request, response);
 
-	        producto.setId(Integer.parseInt(request.getParameter("id")));
-	        producto.setNombre(request.getParameter("nombre"));
-	        producto.setCantidad(Double.parseDouble(request.getParameter("cantidad")));
-	        producto.setPrecio(Double.parseDouble(request.getParameter("precio")));
-	        producto.setFechaActualizar(new java.sql.Date(fechaActual.getTime()));
-	        try {
-	            if (productoDAO.editar(producto)) {
-	                request.setAttribute("mensaje", "Registro editado satisfactoriamente.");
-	            } else {
-	                request.setAttribute("error", "Error al editar el registro.");
-	            }
-	            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/index.jsp");
-	            requestDispatcher.forward(request, response);
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            request.setAttribute("error", "Error en la base de datos.");
-	        }
-	    }
+			} catch (SQLException e) {
+				e.printStackTrace();
+				request.setAttribute("error", "Error en la base de datos.");
+			}
+		} else if (opcion.equals("editar")) {
+			Producto producto = new Producto();
+			ProductoDAO productoDAO = new ProductoDAO();
+
+			producto.setId(Integer.parseInt(request.getParameter("id")));
+			producto.setNombre(request.getParameter("nombre"));
+			producto.setCantidad(Double.parseDouble(request.getParameter("cantidad")));
+			producto.setPrecio(Double.parseDouble(request.getParameter("precio")));
+			producto.setFechaActualizar(new java.sql.Date(fechaActual.getTime()));
+			try {
+				if (productoDAO.editar(producto)) {
+					request.setAttribute("mensaje", "Registro editado satisfactoriamente.");
+				} else {
+					request.setAttribute("error", "Error al editar el registro.");
+				}
+				RequestDispatcher requestDispatcher = request.getRequestDispatcher("/index.jsp");
+				requestDispatcher.forward(request, response);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				request.setAttribute("error", "Error en la base de datos.");
+			}
+		}
 	}
 
-		// doGet(request, response);
+	// doGet(request, response);
 
 }

@@ -1,6 +1,7 @@
 package com.aprendec.model;
 
-import java.sql.Date;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class Producto {
 
@@ -12,7 +13,6 @@ public class Producto {
 	private Date fechaActualizar;
 
 	public Producto(int id, String nombre, double cantidad, double precio, Date fechaCrear, Date fechaActualizar) {
-		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.cantidad = cantidad;
@@ -22,7 +22,8 @@ public class Producto {
 	}
 
 	public Producto() {
-		// TODO Auto-generated constructor stub
+		this.fechaCrear = new Date(); // Fecha de creación establecida automáticamente
+		this.fechaActualizar = null; // Fecha de actualización puede ser nula inicialmente
 	}
 
 	public int getId() {
@@ -71,6 +72,24 @@ public class Producto {
 
 	public void setFechaActualizar(Date fechaActualizar) {
 		this.fechaActualizar = fechaActualizar;
+	}
+
+	public String getFechaCrearFormateada() {
+		if (fechaCrear != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d 'de' MMMM 'de' yyyy 'a las' HH:mm:ss");
+			return sdf.format(fechaCrear);
+		} else {
+			return "Fecha no disponible";
+		}
+	}
+
+	public String getFechaActualizarFormateada() {
+		if (fechaActualizar != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d 'de' MMMM 'de' yyyy 'a las' HH:mm:ss");
+			return sdf.format(fechaActualizar);
+		} else {
+			return "Fecha no disponible";
+		}
 	}
 
 	@Override

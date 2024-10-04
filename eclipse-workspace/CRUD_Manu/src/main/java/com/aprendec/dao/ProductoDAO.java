@@ -1,6 +1,7 @@
 package com.aprendec.dao;
 
 import java.sql.Connection;
+import java.sql.Date; // Importa java.sql.Date para convertir de java.util.Date
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,15 +24,19 @@ public class ProductoDAO {
 
 		try {
 			connection.setAutoCommit(false);
-			sql = "INSERT INTO productos (id, nombre, cantidad, precio, fecha_crear,fecha_actualizar) VALUES(?,?,?,?,?,?)";
+			sql = "INSERT INTO productos (nombre, cantidad, precio, fecha_crear, fecha_actualizar) VALUES(?,?,?,?,?)";
 			statement = connection.prepareStatement(sql);
 
-			statement.setString(1, null);
-			statement.setString(2, producto.getNombre());
-			statement.setDouble(3, producto.getCantidad());
-			statement.setDouble(4, producto.getPrecio());
-			statement.setDate(5, producto.getFechaCrear());
-			statement.setDate(6, producto.getFechaActualizar());
+			// Si la fecha de actualización es null, asignar la fecha actual
+			if (producto.getFechaActualizar() == null) {
+				producto.setFechaActualizar(new java.util.Date());
+			}
+
+			statement.setString(1, producto.getNombre());
+			statement.setDouble(2, producto.getCantidad());
+			statement.setDouble(3, producto.getPrecio());
+			statement.setDate(4, new java.sql.Date(producto.getFechaCrear().getTime()));
+			statement.setDate(5, new java.sql.Date(producto.getFechaActualizar().getTime()));
 
 			estadoOperacion = statement.executeUpdate() > 0;
 
@@ -51,15 +56,21 @@ public class ProductoDAO {
 		String sql = null;
 		estadoOperacion = false;
 		connection = obtenerConexion();
+
 		try {
 			connection.setAutoCommit(false);
 			sql = "UPDATE productos SET nombre=?, cantidad=?, precio=?, fecha_actualizar=? WHERE id=?";
 			statement = connection.prepareStatement(sql);
 
+			// Si la fecha de actualización es null, asignar la fecha actual
+			if (producto.getFechaActualizar() == null) {
+				producto.setFechaActualizar(new java.util.Date());
+			}
+
 			statement.setString(1, producto.getNombre());
 			statement.setDouble(2, producto.getCantidad());
 			statement.setDouble(3, producto.getPrecio());
-			statement.setDate(4, producto.getFechaActualizar());
+			statement.setDate(4, new java.sql.Date(producto.getFechaActualizar().getTime()));
 			statement.setInt(5, producto.getId());
 
 			estadoOperacion = statement.executeUpdate() > 0;
@@ -80,6 +91,7 @@ public class ProductoDAO {
 		String sql = null;
 		estadoOperacion = false;
 		connection = obtenerConexion();
+
 		try {
 			connection.setAutoCommit(false);
 			sql = "DELETE FROM productos WHERE id=?";
@@ -101,38 +113,41 @@ public class ProductoDAO {
 
 	// obtener lista de productos
 	public List<Producto> obtenerProductos() throws SQLException {
-	    ResultSet resultSet = null;
-	    List<Producto> listaProductos = new ArrayList<>();
+		ResultSet resultSet = null;
+		List<Producto> listaProductos = new ArrayList<>();
 
-	    String sql = null;
-	    estadoOperacion = false;
-	    connection = obtenerConexion();
+		String sql = null;
+		estadoOperacion = false;
+		connection = obtenerConexion();
 
-	    try {
-	        sql = "SELECT * FROM productos";
-	        statement = connection.prepareStatement(sql);
-	        resultSet = statement.executeQuery(); // Corrección aquí
+		try {
+			sql = "SELECT * FROM productos";
+			statement = connection.prepareStatement(sql);
+			resultSet = statement.executeQuery();
 
-	        while (resultSet.next()) {
-	            Producto p = new Producto();
-	            p.setId(resultSet.getInt("id")); // Es mejor usar el nombre de la columna
-	            p.setNombre(resultSet.getString("nombre"));
-	            p.setCantidad(resultSet.getDouble("cantidad"));
-	            p.setPrecio(resultSet.getDouble("precio"));
-	            p.setFechaCrear(resultSet.getDate("fecha_crear"));
-	            p.setFechaActualizar(resultSet.getDate("fecha_actualizar"));
-	            listaProductos.add(p);
-	        }
+			while (resultSet.next()) {
+				Producto p = new Producto();
+				p.setId(resultSet.getInt("id"));
+				p.setNombre(resultSet.getString("nombre"));
+				p.setCantidad(resultSet.getDouble("cantidad"));
+				p.setPrecio(resultSet.getDouble("precio"));
+				p.setFechaCrear(resultSet.getDate("fecha_crear")); // Asegúrate de que en la base de datos sea tipo DATE
+				p.setFechaActualizar(resultSet.getDate("fecha_actualizar"));
+				listaProductos.add(p);
+			}
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        if (resultSet != null) resultSet.close(); // Asegúrate de cerrar el ResultSet
-	        if (statement != null) statement.close(); // Asegúrate de cerrar el PreparedStatement
-	        if (connection != null) connection.close(); // Asegúrate de cerrar la conexión
-	    }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (resultSet != null)
+				resultSet.close();
+			if (statement != null)
+				statement.close();
+			if (connection != null)
+				connection.close();
+		}
 
-	    return listaProductos;
+		return listaProductos;
 	}
 
 	// obtener producto
@@ -162,28 +177,35 @@ public class ProductoDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			if (resultSet != null)
+				resultSet.close();
+			if (statement != null)
+				statement.close();
+			if (connection != null)
+				connection.close();
 		}
 
 		return p;
 	}
-	//comprobar si existe producto
+
+	// comprobar si existe producto
 	public boolean existeProducto(String nombre) throws SQLException {
-	    String sql = "SELECT COUNT(*) FROM productos WHERE nombre = ?";
-	    try (Connection connection = obtenerConexion();
-	         PreparedStatement statement = connection.prepareStatement(sql)) {
-	        statement.setString(1, nombre);
-	        try (ResultSet resultSet = statement.executeQuery()) {
-	            if (resultSet.next()) {
-	                return resultSet.getInt(1) > 0;
-	            }
-	        }
-	    }
-	    return false;
+		String sql = "SELECT COUNT(*) FROM productos WHERE nombre = ?";
+		try (Connection connection = obtenerConexion();
+				PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.setString(1, nombre);
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getInt(1) > 0;
+				}
+			}
+		}
+		return false;
 	}
 
 	// obtener conexion pool
 	private Connection obtenerConexion() throws SQLException {
 		return Conexion.getConnection();
 	}
-
 }

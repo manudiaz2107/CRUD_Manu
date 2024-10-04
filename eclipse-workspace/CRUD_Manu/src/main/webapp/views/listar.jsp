@@ -73,7 +73,7 @@
 </head>
 <body>
     <h1>Listar Productos</h1>
-	<a href="productos?opcion=crear" class="btn-crear">Crear Nuevo Producto</a>
+    <a href="productos?opcion=crear" class="btn-crear">Crear Nuevo Producto</a>
     <table>
         <tr>
             <th>Id</th>
@@ -90,8 +90,8 @@
                 <td><c:out value="${producto.nombre}"></c:out></td>
                 <td><c:out value="${producto.cantidad}"></c:out></td>
                 <td><c:out value="${producto.precio}"></c:out></td>
-                <td><c:out value="${producto.fechaCrear}"></c:out></td>
-                <td><c:out value="${producto.fechaActualizar}"></c:out></td>
+                <td><c:out value="${producto.fechaCrearFormateada}"></c:out></td>
+                <td><c:out value="${producto.fechaActualizarFormateada}"></c:out></td>
                 <td class="action">
                     <a href="productos?opcion=eliminar&id=${producto.id}">Eliminar</a>
                 </td>
