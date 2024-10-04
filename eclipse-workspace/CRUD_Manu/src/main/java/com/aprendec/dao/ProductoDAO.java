@@ -166,6 +166,20 @@ public class ProductoDAO {
 
 		return p;
 	}
+	//comprobar si existe producto
+	public boolean existeProducto(String nombre) throws SQLException {
+	    String sql = "SELECT COUNT(*) FROM productos WHERE nombre = ?";
+	    try (Connection connection = obtenerConexion();
+	         PreparedStatement statement = connection.prepareStatement(sql)) {
+	        statement.setString(1, nombre);
+	        try (ResultSet resultSet = statement.executeQuery()) {
+	            if (resultSet.next()) {
+	                return resultSet.getInt(1) > 0;
+	            }
+	        }
+	    }
+	    return false;
+	}
 
 	// obtener conexion pool
 	private Connection obtenerConexion() throws SQLException {
