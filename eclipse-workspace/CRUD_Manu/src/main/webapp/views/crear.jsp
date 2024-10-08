@@ -7,51 +7,51 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #333;
             text-align: center;
-        }
-
-        .form-container {
-            width: 400px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: #333;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
             margin-top: 20px;
         }
 
         td {
             padding: 10px;
-            text-align: left;
         }
 
-        input[type="text"] {
-            width: 100%;
+        input[type="text"], input[type="number"] {
+            width: 95%;
             padding: 8px;
+            margin-top: 5px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
         }
 
         input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
-            width: 100%;
-            font-size: 16px;
         }
 
         input[type="submit"]:hover {
@@ -60,9 +60,9 @@
     </style>
 </head>
 <body>
-    <h1>Crear Producto</h1>
-    <div class="form-container">
-        <form action="productos" method="post">
+    <div class="container">
+        <h1>Crear Producto</h1>
+        <form action="productos" method="post" onsubmit="return validarFormulario()">
             <input type="hidden" name="opcion" value="guardar">
             <table>
                 <tr>
@@ -71,15 +71,34 @@
                 </tr>
                 <tr>
                     <td>Cantidad:</td>
-                    <td><input type="text" name="cantidad" required></td>
+                    <td><input type="number" name="cantidad" required min="1"></td>
                 </tr>
                 <tr>
                     <td>Precio:</td>
-                    <td><input type="text" name="precio" required></td>
+                    <td><input type="number" step="0.01" name="precio" required min="0.01"></td>
                 </tr>
             </table>
             <input type="submit" value="Guardar">
         </form>
     </div>
+
+    <script>
+        function validarFormulario() {
+            const cantidad = document.querySelector('input[name="cantidad"]').value;
+            const precio = document.querySelector('input[name="precio"]').value;
+
+            if (isNaN(cantidad) || cantidad <= 0) {
+                alert("La cantidad debe ser un número positivo.");
+                return false;
+            }
+
+            if (isNaN(precio) || precio <= 0) {
+                alert("El precio debe ser un número positivo.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </body>
 </html>

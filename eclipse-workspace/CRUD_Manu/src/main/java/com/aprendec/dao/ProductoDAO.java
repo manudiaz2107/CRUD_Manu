@@ -1,7 +1,7 @@
 package com.aprendec.dao;
 
 import java.sql.Connection;
-import java.sql.Date; // Importa java.sql.Date para convertir de java.util.Date
+import java.sql.Date; 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,200 +12,192 @@ import com.aprendec.conexion.Conexion;
 import com.aprendec.model.Producto;
 
 public class ProductoDAO {
-	private Connection connection;
-	private PreparedStatement statement;
-	private boolean estadoOperacion;
+    private Connection connection;
+    private PreparedStatement statement;
+    private boolean estadoOperacion;
 
-	// guardar producto
-	public boolean guardar(Producto producto) throws SQLException {
-		String sql = null;
-		estadoOperacion = false;
-		connection = obtenerConexion();
+    // guardar producto
+    public boolean guardar(Producto producto) throws SQLException {
+        String sql = null;
+        estadoOperacion = false;
+        connection = obtenerConexion();
 
-		try {
-			connection.setAutoCommit(false);
-			sql = "INSERT INTO productos (nombre, cantidad, precio, fecha_crear, fecha_actualizar) VALUES(?,?,?,?,?)";
-			statement = connection.prepareStatement(sql);
+        try {
+            connection.setAutoCommit(false);
+            sql = "INSERT INTO productos (nombre, cantidad, precio, fecha_crear, fecha_actualizar) VALUES(?,?,?,?,?)";
+            statement = connection.prepareStatement(sql);
 
-			// Si la fecha de actualización es null, asignar la fecha actual
-			if (producto.getFechaActualizar() == null) {
-				producto.setFechaActualizar(new java.util.Date());
-			}
+            if (producto.getFechaActualizar() == null) {
+                producto.setFechaActualizar(new java.util.Date());
+            }
 
-			statement.setString(1, producto.getNombre());
-			statement.setDouble(2, producto.getCantidad());
-			statement.setDouble(3, producto.getPrecio());
-			statement.setDate(4, new java.sql.Date(producto.getFechaCrear().getTime()));
-			statement.setDate(5, new java.sql.Date(producto.getFechaActualizar().getTime()));
+            statement.setString(1, producto.getNombre());
+            statement.setDouble(2, producto.getCantidad());
+            statement.setDouble(3, producto.getPrecio());
+            statement.setDate(4, new java.sql.Date(producto.getFechaCrear().getTime()));
+            statement.setDate(5, new java.sql.Date(producto.getFechaActualizar().getTime()));
 
-			estadoOperacion = statement.executeUpdate() > 0;
+            estadoOperacion = statement.executeUpdate() > 0;
 
-			connection.commit();
-			statement.close();
-			connection.close();
-		} catch (SQLException e) {
-			connection.rollback();
-			e.printStackTrace();
-		}
+            connection.commit();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            connection.rollback();
+            e.printStackTrace();
+        }
 
-		return estadoOperacion;
-	}
+        return estadoOperacion;
+    }
 
-	// editar producto
-	public boolean editar(Producto producto) throws SQLException {
-		String sql = null;
-		estadoOperacion = false;
-		connection = obtenerConexion();
+    // editar producto
+    public boolean editar(Producto producto) throws SQLException {
+        String sql = null;
+        estadoOperacion = false;
+        connection = obtenerConexion();
 
-		try {
-			connection.setAutoCommit(false);
-			sql = "UPDATE productos SET nombre=?, cantidad=?, precio=?, fecha_actualizar=? WHERE id=?";
-			statement = connection.prepareStatement(sql);
+        try {
+            connection.setAutoCommit(false);
+            sql = "UPDATE productos SET nombre=?, cantidad=?, precio=?, fecha_actualizar=? WHERE id=?";
+            statement = connection.prepareStatement(sql);
 
-			// Si la fecha de actualización es null, asignar la fecha actual
-			if (producto.getFechaActualizar() == null) {
-				producto.setFechaActualizar(new java.util.Date());
-			}
+            if (producto.getFechaActualizar() == null) {
+                producto.setFechaActualizar(new java.util.Date());
+            }
 
-			statement.setString(1, producto.getNombre());
-			statement.setDouble(2, producto.getCantidad());
-			statement.setDouble(3, producto.getPrecio());
-			statement.setDate(4, new java.sql.Date(producto.getFechaActualizar().getTime()));
-			statement.setInt(5, producto.getId());
+            statement.setString(1, producto.getNombre());
+            statement.setDouble(2, producto.getCantidad());
+            statement.setDouble(3, producto.getPrecio());
+            statement.setDate(4, new java.sql.Date(producto.getFechaActualizar().getTime()));
+            statement.setInt(5, producto.getId());
 
-			estadoOperacion = statement.executeUpdate() > 0;
-			connection.commit();
-			statement.close();
-			connection.close();
+            estadoOperacion = statement.executeUpdate() > 0;
+            connection.commit();
+            statement.close();
+            connection.close();
 
-		} catch (SQLException e) {
-			connection.rollback();
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            connection.rollback();
+            e.printStackTrace();
+        }
 
-		return estadoOperacion;
-	}
+        return estadoOperacion;
+    }
 
-	// eliminar producto
-	public boolean eliminar(int idProducto) throws SQLException {
-		String sql = null;
-		estadoOperacion = false;
-		connection = obtenerConexion();
+    // eliminar producto
+    public boolean eliminar(int idProducto) throws SQLException {
+        String sql = null;
+        estadoOperacion = false;
+        connection = obtenerConexion();
 
-		try {
-			connection.setAutoCommit(false);
-			sql = "DELETE FROM productos WHERE id=?";
-			statement = connection.prepareStatement(sql);
-			statement.setInt(1, idProducto);
+        try {
+            connection.setAutoCommit(false);
+            sql = "DELETE FROM productos WHERE id=?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, idProducto);
 
-			estadoOperacion = statement.executeUpdate() > 0;
-			connection.commit();
-			statement.close();
-			connection.close();
+            estadoOperacion = statement.executeUpdate() > 0;
+            connection.commit();
+            statement.close();
+            connection.close();
 
-		} catch (SQLException e) {
-			connection.rollback();
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            connection.rollback();
+            e.printStackTrace();
+        }
 
-		return estadoOperacion;
-	}
+        return estadoOperacion;
+    }
 
-	// obtener lista de productos
-	public List<Producto> obtenerProductos() throws SQLException {
-		ResultSet resultSet = null;
-		List<Producto> listaProductos = new ArrayList<>();
+    // obtener lista de productos
+    public List<Producto> obtenerProductos() throws SQLException {
+        ResultSet resultSet = null;
+        List<Producto> listaProductos = new ArrayList<>();
 
-		String sql = null;
-		estadoOperacion = false;
-		connection = obtenerConexion();
+        String sql = null;
+        estadoOperacion = false;
+        connection = obtenerConexion();
 
-		try {
-			sql = "SELECT * FROM productos";
-			statement = connection.prepareStatement(sql);
-			resultSet = statement.executeQuery();
+        try {
+            sql = "SELECT * FROM productos";
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
 
-			while (resultSet.next()) {
-				Producto p = new Producto();
-				p.setId(resultSet.getInt("id"));
-				p.setNombre(resultSet.getString("nombre"));
-				p.setCantidad(resultSet.getDouble("cantidad"));
-				p.setPrecio(resultSet.getDouble("precio"));
-				p.setFechaCrear(resultSet.getDate("fecha_crear")); // Asegúrate de que en la base de datos sea tipo DATE
-				p.setFechaActualizar(resultSet.getDate("fecha_actualizar"));
-				listaProductos.add(p);
-			}
+            while (resultSet.next()) {
+                Producto p = new Producto();
+                p.setId(resultSet.getInt("id"));
+                p.setNombre(resultSet.getString("nombre"));
+                p.setCantidad(resultSet.getDouble("cantidad"));
+                p.setPrecio(resultSet.getDouble("precio"));
+                p.setFechaCrear(resultSet.getDate("fecha_crear"));
+                p.setFechaActualizar(resultSet.getDate("fecha_actualizar"));
+                listaProductos.add(p);
+            }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (resultSet != null)
-				resultSet.close();
-			if (statement != null)
-				statement.close();
-			if (connection != null)
-				connection.close();
-		}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) resultSet.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        }
 
-		return listaProductos;
-	}
+        return listaProductos;
+    }
 
-	// obtener producto
-	public Producto obtenerProducto(int idProducto) throws SQLException {
-		ResultSet resultSet = null;
-		Producto p = new Producto();
+    // obtener producto
+    public Producto obtenerProducto(int idProducto) throws SQLException {
+        ResultSet resultSet = null;
+        Producto p = new Producto();
 
-		String sql = null;
-		estadoOperacion = false;
-		connection = obtenerConexion();
+        String sql = null;
+        estadoOperacion = false;
+        connection = obtenerConexion();
 
-		try {
-			sql = "SELECT * FROM productos WHERE id =?";
-			statement = connection.prepareStatement(sql);
-			statement.setInt(1, idProducto);
+        try {
+            sql = "SELECT * FROM productos WHERE id =?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, idProducto);
 
-			resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
-			if (resultSet.next()) {
-				p.setId(resultSet.getInt(1));
-				p.setNombre(resultSet.getString(2));
-				p.setCantidad(resultSet.getDouble(3));
-				p.setPrecio(resultSet.getDouble(4));
-				p.setFechaCrear(resultSet.getDate(5));
-				p.setFechaActualizar(resultSet.getDate(6));
-			}
+            if (resultSet.next()) {
+                p.setId(resultSet.getInt(1));
+                p.setNombre(resultSet.getString(2));
+                p.setCantidad(resultSet.getDouble(3));
+                p.setPrecio(resultSet.getDouble(4));
+                p.setFechaCrear(resultSet.getDate(5));
+                p.setFechaActualizar(resultSet.getDate(6));
+            }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (resultSet != null)
-				resultSet.close();
-			if (statement != null)
-				statement.close();
-			if (connection != null)
-				connection.close();
-		}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) resultSet.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        }
 
-		return p;
-	}
+        return p;
+    }
 
-	// comprobar si existe producto
-	public boolean existeProducto(String nombre) throws SQLException {
-		String sql = "SELECT COUNT(*) FROM productos WHERE nombre = ?";
-		try (Connection connection = obtenerConexion();
-				PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setString(1, nombre);
-			try (ResultSet resultSet = statement.executeQuery()) {
-				if (resultSet.next()) {
-					return resultSet.getInt(1) > 0;
-				}
-			}
-		}
-		return false;
-	}
+    // comprobar si existe producto
+    public boolean existeProducto(String nombre) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM productos WHERE nombre = ?";
+        try (Connection connection = obtenerConexion();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, nombre);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
 
-	// obtener conexion pool
-	private Connection obtenerConexion() throws SQLException {
-		return Conexion.getConnection();
-	}
+    // obtener conexion pool
+    private Connection obtenerConexion() throws SQLException {
+        return Conexion.getConnection();
+    }
 }
