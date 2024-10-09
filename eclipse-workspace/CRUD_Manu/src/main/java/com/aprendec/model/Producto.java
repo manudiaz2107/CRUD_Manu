@@ -1,6 +1,6 @@
 package com.aprendec.model;
 
-import java.util.Date;
+import java.sql.Timestamp; // Importar la clase Timestamp
 import java.text.SimpleDateFormat;
 
 public class Producto {
@@ -9,10 +9,10 @@ public class Producto {
     private String nombre;
     private double cantidad;
     private double precio;
-    private Date fechaCrear;
-    private Date fechaActualizar;
+    private Timestamp fechaCrear; // Cambiado a Timestamp
+    private Timestamp fechaActualizar; // Cambiado a Timestamp
 
-    public Producto(int id, String nombre, double cantidad, double precio, Date fechaCrear, Date fechaActualizar) {
+    public Producto(int id, String nombre, double cantidad, double precio, Timestamp fechaCrear, Timestamp fechaActualizar) {
         this.id = id;
         this.nombre = nombre;
         this.cantidad = cantidad;
@@ -22,7 +22,7 @@ public class Producto {
     }
 
     public Producto() {
-        this.fechaCrear = new Date();
+        this.fechaCrear = new Timestamp(System.currentTimeMillis()); // Establecer la fecha actual
         this.fechaActualizar = null;
     }
 
@@ -58,19 +58,19 @@ public class Producto {
         this.precio = precio;
     }
 
-    public Date getFechaCrear() {
+    public Timestamp getFechaCrear() {
         return fechaCrear;
     }
 
-    public void setFechaCrear(Date fechaCrear) {
+    public void setFechaCrear(Timestamp fechaCrear) {
         this.fechaCrear = fechaCrear;
     }
 
-    public Date getFechaActualizar() {
+    public Timestamp getFechaActualizar() {
         return fechaActualizar;
     }
 
-    public void setFechaActualizar(Date fechaActualizar) {
+    public void setFechaActualizar(Timestamp fechaActualizar) {
         this.fechaActualizar = fechaActualizar;
     }
 

@@ -2,7 +2,7 @@ package com.aprendec.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
+import java.sql.Timestamp; // Importar la clase Timestamp
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -64,14 +64,14 @@ public class ProductoController extends HttpServlet {
         String opcion = request.getParameter("opcion");
         ProductoDAO productoDAO = new ProductoDAO();
         Producto producto = new Producto();
-        Date fechaActual = new Date();
+        Timestamp fechaActual = new Timestamp(System.currentTimeMillis()); // Usar Timestamp
 
         try {
             if (opcion.equals("guardar")) {
                 producto.setNombre(request.getParameter("nombre"));
                 producto.setCantidad(Double.parseDouble(request.getParameter("cantidad")));
                 producto.setPrecio(Double.parseDouble(request.getParameter("precio")));
-                producto.setFechaCrear(new java.sql.Date(fechaActual.getTime()));
+                producto.setFechaCrear(fechaActual); // Cambiado a Timestamp
 
                 if (productoDAO.existeProducto(producto.getNombre())) {
                     request.setAttribute("error", "El producto ya existe.");
@@ -88,7 +88,7 @@ public class ProductoController extends HttpServlet {
                 producto.setNombre(request.getParameter("nombre"));
                 producto.setCantidad(Double.parseDouble(request.getParameter("cantidad")));
                 producto.setPrecio(Double.parseDouble(request.getParameter("precio")));
-                producto.setFechaActualizar(new java.sql.Date(fechaActual.getTime()));
+                producto.setFechaActualizar(fechaActual); // Cambiado a Timestamp
 
                 Producto productoExistente = productoDAO.obtenerProducto(producto.getId());
 
@@ -107,6 +107,8 @@ public class ProductoController extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("error", "Error en la base de datos.");
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/views/crear.jsp");
+            requestDispatcher.forward(request, response);
         }
     }
 }

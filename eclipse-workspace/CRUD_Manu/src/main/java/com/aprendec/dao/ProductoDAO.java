@@ -1,10 +1,10 @@
 package com.aprendec.dao;
 
 import java.sql.Connection;
-import java.sql.Date; 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp; // Importar la clase Timestamp
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,14 +28,14 @@ public class ProductoDAO {
             statement = connection.prepareStatement(sql);
 
             if (producto.getFechaActualizar() == null) {
-                producto.setFechaActualizar(new java.util.Date());
+                producto.setFechaActualizar(new Timestamp(System.currentTimeMillis())); // Usar Timestamp
             }
 
             statement.setString(1, producto.getNombre());
             statement.setDouble(2, producto.getCantidad());
             statement.setDouble(3, producto.getPrecio());
-            statement.setDate(4, new java.sql.Date(producto.getFechaCrear().getTime()));
-            statement.setDate(5, new java.sql.Date(producto.getFechaActualizar().getTime()));
+            statement.setTimestamp(4, producto.getFechaCrear()); // Cambiado a Timestamp
+            statement.setTimestamp(5, producto.getFechaActualizar()); // Cambiado a Timestamp
 
             estadoOperacion = statement.executeUpdate() > 0;
 
@@ -62,13 +62,13 @@ public class ProductoDAO {
             statement = connection.prepareStatement(sql);
 
             if (producto.getFechaActualizar() == null) {
-                producto.setFechaActualizar(new java.util.Date());
+                producto.setFechaActualizar(new Timestamp(System.currentTimeMillis())); // Usar Timestamp
             }
 
             statement.setString(1, producto.getNombre());
             statement.setDouble(2, producto.getCantidad());
             statement.setDouble(3, producto.getPrecio());
-            statement.setDate(4, new java.sql.Date(producto.getFechaActualizar().getTime()));
+            statement.setTimestamp(4, producto.getFechaActualizar()); // Cambiado a Timestamp
             statement.setInt(5, producto.getId());
 
             estadoOperacion = statement.executeUpdate() > 0;
@@ -129,8 +129,8 @@ public class ProductoDAO {
                 p.setNombre(resultSet.getString("nombre"));
                 p.setCantidad(resultSet.getDouble("cantidad"));
                 p.setPrecio(resultSet.getDouble("precio"));
-                p.setFechaCrear(resultSet.getDate("fecha_crear"));
-                p.setFechaActualizar(resultSet.getDate("fecha_actualizar"));
+                p.setFechaCrear(resultSet.getTimestamp("fecha_crear")); // Cambiado a Timestamp
+                p.setFechaActualizar(resultSet.getTimestamp("fecha_actualizar")); // Cambiado a Timestamp
                 listaProductos.add(p);
             }
 
@@ -166,8 +166,8 @@ public class ProductoDAO {
                 p.setNombre(resultSet.getString(2));
                 p.setCantidad(resultSet.getDouble(3));
                 p.setPrecio(resultSet.getDouble(4));
-                p.setFechaCrear(resultSet.getDate(5));
-                p.setFechaActualizar(resultSet.getDate(6));
+                p.setFechaCrear(resultSet.getTimestamp(5)); // Cambiado a Timestamp
+                p.setFechaActualizar(resultSet.getTimestamp(6)); // Cambiado a Timestamp
             }
 
         } catch (SQLException e) {
