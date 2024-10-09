@@ -15,31 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import com.aprendec.dao.ProductoDAO;
 import com.aprendec.model.Producto;
 
-/**
- * Controlador para gestionar las peticiones relacionadas con la
- * tabla de productos. Este servlet se encarga de procesar
- * las operaciones CRUD (crear, listar, editar y eliminar)
- * sobre los productos a través de la clase ProductoDAO.
- */
 @WebServlet(description = "administra peticiones para la tabla productos", urlPatterns = { "/productos" })
 public class ProductoController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Constructor del controlador de productos.
-     */
     public ProductoController() {
         super();
     }
 
-    /**
-     * Método que maneja las peticiones HTTP GET.
-     * 
-     * @param request la solicitud HTTP
-     * @param response la respuesta HTTP
-     * @throws ServletException si ocurre un error en el procesamiento de la solicitud
-     * @throws IOException si ocurre un error al escribir la respuesta
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String opcion = request.getParameter("opcion");
@@ -53,6 +36,15 @@ public class ProductoController extends HttpServlet {
             } else if (opcion.equals("listar")) {
                 List<Producto> lista = productoDAO.obtenerProductos();
                 request.setAttribute("lista", lista);
+
+                // Recuperar mensaje de la sesión
+                String mensaje = (String) request.getSession().getAttribute("mensaje");
+                if (mensaje != null) {
+                    request.setAttribute("mensaje", mensaje);
+                    // Limpiar el mensaje de la sesión después de mostrarlo
+                    request.getSession().removeAttribute("mensaje");
+                }
+
                 requestDispatcher = request.getRequestDispatcher("/views/listar.jsp");
                 requestDispatcher.forward(request, response);
             } else if (opcion.equals("editar")) {
@@ -68,6 +60,9 @@ public class ProductoController extends HttpServlet {
             } else if (opcion.equals("eliminar")) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 productoDAO.eliminar(id);
+                
+                // Mensaje de éxito después de eliminar un producto
+                request.getSession().setAttribute("mensaje", "Producto eliminado con éxito.");
                 response.sendRedirect("productos?opcion=listar");
             }
         } catch (SQLException | NumberFormatException e) {
@@ -76,14 +71,6 @@ public class ProductoController extends HttpServlet {
         }
     }
 
-    /**
-     * Método que maneja las peticiones HTTP POST.
-     * 
-     * @param request la solicitud HTTP
-     * @param response la respuesta HTTP
-     * @throws ServletException si ocurre un error en el procesamiento de la solicitud
-     * @throws IOException si ocurre un error al escribir la respuesta
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String opcion = request.getParameter("opcion");
@@ -106,6 +93,9 @@ public class ProductoController extends HttpServlet {
                 }
 
                 productoDAO.guardar(producto);
+                
+                // Mensaje de éxito después de crear un producto (guardado en sesión)
+                request.getSession().setAttribute("mensaje", "Producto creado con éxito.");
                 response.sendRedirect("productos?opcion=listar");
 
             } else if (opcion.equals("editar")) {
@@ -127,6 +117,9 @@ public class ProductoController extends HttpServlet {
                 }
 
                 productoDAO.editar(producto);
+                
+                // Mensaje de éxito después de editar un producto (guardado en sesión)
+                request.getSession().setAttribute("mensaje", "Producto editado con éxito.");
                 response.sendRedirect("productos?opcion=listar");
             }
         } catch (SQLException e) {
