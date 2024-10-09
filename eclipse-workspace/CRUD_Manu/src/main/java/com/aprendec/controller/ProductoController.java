@@ -2,7 +2,7 @@ package com.aprendec.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp; // Importar la clase Timestamp
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -15,14 +15,31 @@ import javax.servlet.http.HttpServletResponse;
 import com.aprendec.dao.ProductoDAO;
 import com.aprendec.model.Producto;
 
+/**
+ * Controlador para gestionar las peticiones relacionadas con la
+ * tabla de productos. Este servlet se encarga de procesar
+ * las operaciones CRUD (crear, listar, editar y eliminar)
+ * sobre los productos a través de la clase ProductoDAO.
+ */
 @WebServlet(description = "administra peticiones para la tabla productos", urlPatterns = { "/productos" })
 public class ProductoController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Constructor del controlador de productos.
+     */
     public ProductoController() {
         super();
     }
 
+    /**
+     * Método que maneja las peticiones HTTP GET.
+     * 
+     * @param request la solicitud HTTP
+     * @param response la respuesta HTTP
+     * @throws ServletException si ocurre un error en el procesamiento de la solicitud
+     * @throws IOException si ocurre un error al escribir la respuesta
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String opcion = request.getParameter("opcion");
@@ -59,19 +76,27 @@ public class ProductoController extends HttpServlet {
         }
     }
 
+    /**
+     * Método que maneja las peticiones HTTP POST.
+     * 
+     * @param request la solicitud HTTP
+     * @param response la respuesta HTTP
+     * @throws ServletException si ocurre un error en el procesamiento de la solicitud
+     * @throws IOException si ocurre un error al escribir la respuesta
+     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String opcion = request.getParameter("opcion");
         ProductoDAO productoDAO = new ProductoDAO();
         Producto producto = new Producto();
-        Timestamp fechaActual = new Timestamp(System.currentTimeMillis()); // Usar Timestamp
+        Timestamp fechaActual = new Timestamp(System.currentTimeMillis());
 
         try {
             if (opcion.equals("guardar")) {
                 producto.setNombre(request.getParameter("nombre"));
                 producto.setCantidad(Double.parseDouble(request.getParameter("cantidad")));
                 producto.setPrecio(Double.parseDouble(request.getParameter("precio")));
-                producto.setFechaCrear(fechaActual); // Cambiado a Timestamp
+                producto.setFechaCrear(fechaActual);
 
                 if (productoDAO.existeProducto(producto.getNombre())) {
                     request.setAttribute("error", "El producto ya existe.");
@@ -88,7 +113,7 @@ public class ProductoController extends HttpServlet {
                 producto.setNombre(request.getParameter("nombre"));
                 producto.setCantidad(Double.parseDouble(request.getParameter("cantidad")));
                 producto.setPrecio(Double.parseDouble(request.getParameter("precio")));
-                producto.setFechaActualizar(fechaActual); // Cambiado a Timestamp
+                producto.setFechaActualizar(fechaActual);
 
                 Producto productoExistente = productoDAO.obtenerProducto(producto.getId());
 

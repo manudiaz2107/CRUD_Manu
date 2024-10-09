@@ -4,19 +4,29 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp; // Importar la clase Timestamp
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.aprendec.conexion.Conexion;
 import com.aprendec.model.Producto;
 
+/**
+ * Clase ProductoDAO que proporciona métodos para realizar operaciones de acceso a datos
+ * sobre productos en la base de datos.
+ */
 public class ProductoDAO {
     private Connection connection;
     private PreparedStatement statement;
     private boolean estadoOperacion;
 
-    // guardar producto
+    /**
+     * Guarda un nuevo producto en la base de datos.
+     * 
+     * @param producto El objeto Producto a guardar.
+     * @return true si la operación se realizó con éxito, false en caso contrario.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public boolean guardar(Producto producto) throws SQLException {
         String sql = null;
         estadoOperacion = false;
@@ -28,14 +38,14 @@ public class ProductoDAO {
             statement = connection.prepareStatement(sql);
 
             if (producto.getFechaActualizar() == null) {
-                producto.setFechaActualizar(new Timestamp(System.currentTimeMillis())); // Usar Timestamp
+                producto.setFechaActualizar(new Timestamp(System.currentTimeMillis())); 
             }
 
             statement.setString(1, producto.getNombre());
             statement.setDouble(2, producto.getCantidad());
             statement.setDouble(3, producto.getPrecio());
-            statement.setTimestamp(4, producto.getFechaCrear()); // Cambiado a Timestamp
-            statement.setTimestamp(5, producto.getFechaActualizar()); // Cambiado a Timestamp
+            statement.setTimestamp(4, producto.getFechaCrear());
+            statement.setTimestamp(5, producto.getFechaActualizar());
 
             estadoOperacion = statement.executeUpdate() > 0;
 
@@ -50,7 +60,13 @@ public class ProductoDAO {
         return estadoOperacion;
     }
 
-    // editar producto
+    /**
+     * Edita un producto existente en la base de datos.
+     * 
+     * @param producto El objeto Producto con los nuevos datos.
+     * @return true si la operación se realizó con éxito, false en caso contrario.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public boolean editar(Producto producto) throws SQLException {
         String sql = null;
         estadoOperacion = false;
@@ -62,13 +78,13 @@ public class ProductoDAO {
             statement = connection.prepareStatement(sql);
 
             if (producto.getFechaActualizar() == null) {
-                producto.setFechaActualizar(new Timestamp(System.currentTimeMillis())); // Usar Timestamp
+                producto.setFechaActualizar(new Timestamp(System.currentTimeMillis()));
             }
 
             statement.setString(1, producto.getNombre());
             statement.setDouble(2, producto.getCantidad());
             statement.setDouble(3, producto.getPrecio());
-            statement.setTimestamp(4, producto.getFechaActualizar()); // Cambiado a Timestamp
+            statement.setTimestamp(4, producto.getFechaActualizar());
             statement.setInt(5, producto.getId());
 
             estadoOperacion = statement.executeUpdate() > 0;
@@ -84,7 +100,13 @@ public class ProductoDAO {
         return estadoOperacion;
     }
 
-    // eliminar producto
+    /**
+     * Elimina un producto de la base de datos.
+     * 
+     * @param idProducto El ID del producto a eliminar.
+     * @return true si la operación se realizó con éxito, false en caso contrario.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public boolean eliminar(int idProducto) throws SQLException {
         String sql = null;
         estadoOperacion = false;
@@ -109,7 +131,12 @@ public class ProductoDAO {
         return estadoOperacion;
     }
 
-    // obtener lista de productos
+    /**
+     * Obtiene una lista de todos los productos en la base de datos.
+     * 
+     * @return Una lista de objetos Producto.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public List<Producto> obtenerProductos() throws SQLException {
         ResultSet resultSet = null;
         List<Producto> listaProductos = new ArrayList<>();
@@ -129,8 +156,8 @@ public class ProductoDAO {
                 p.setNombre(resultSet.getString("nombre"));
                 p.setCantidad(resultSet.getDouble("cantidad"));
                 p.setPrecio(resultSet.getDouble("precio"));
-                p.setFechaCrear(resultSet.getTimestamp("fecha_crear")); // Cambiado a Timestamp
-                p.setFechaActualizar(resultSet.getTimestamp("fecha_actualizar")); // Cambiado a Timestamp
+                p.setFechaCrear(resultSet.getTimestamp("fecha_crear"));
+                p.setFechaActualizar(resultSet.getTimestamp("fecha_actualizar"));
                 listaProductos.add(p);
             }
 
@@ -145,7 +172,13 @@ public class ProductoDAO {
         return listaProductos;
     }
 
-    // obtener producto
+    /**
+     * Obtiene un producto específico de la base de datos.
+     * 
+     * @param idProducto El ID del producto a obtener.
+     * @return El objeto Producto correspondiente, o un objeto vacío si no se encuentra.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public Producto obtenerProducto(int idProducto) throws SQLException {
         ResultSet resultSet = null;
         Producto p = new Producto();
@@ -181,11 +214,17 @@ public class ProductoDAO {
         return p;
     }
 
-    // comprobar si existe producto
+    /**
+     * Comprueba si un producto con el nombre especificado existe en la base de datos.
+     * 
+     * @param nombre El nombre del producto a comprobar.
+     * @return true si el producto existe, false en caso contrario.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public boolean existeProducto(String nombre) throws SQLException {
         String sql = "SELECT COUNT(*) FROM productos WHERE nombre = ?";
         try (Connection connection = obtenerConexion();
-                PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, nombre);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -196,7 +235,12 @@ public class ProductoDAO {
         return false;
     }
 
-    // obtener conexion pool
+    /**
+     * Obtiene una conexión a la base de datos desde el pool de conexiones.
+     * 
+     * @return Un objeto Connection para interactuar con la base de datos.
+     * @throws SQLException Si ocurre un error al establecer la conexión.
+     */
     private Connection obtenerConexion() throws SQLException {
         return Conexion.getConnection();
     }

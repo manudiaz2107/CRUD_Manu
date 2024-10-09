@@ -71,12 +71,11 @@ input[type="submit"]:hover, .btn-volver:hover {
 }
 
 .btn-volver {
-	background-color: #007BFF; /* Color azul para el botón volver */
+	background-color: #007BFF;
 }
 
 .btn-volver:hover {
 	background-color: #0056b3;
-	/* Color azul más oscuro al pasar el ratón */
 }
 </style>
 </head>
@@ -108,7 +107,6 @@ input[type="submit"]:hover, .btn-volver:hover {
 		</form>
 		<button class="btn-volver" onclick="window.location.href='index.jsp'">Volver
 			al Índice</button>
-		<!-- Botón para volver al índice -->
 	</div>
 
 	<script>

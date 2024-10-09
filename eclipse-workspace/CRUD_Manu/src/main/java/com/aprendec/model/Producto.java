@@ -1,17 +1,30 @@
 package com.aprendec.model;
 
-import java.sql.Timestamp; // Importar la clase Timestamp
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+/**
+ * Clase Producto que representa un producto en el sistema.
+ */
 public class Producto {
 
     private int id;
     private String nombre;
     private double cantidad;
     private double precio;
-    private Timestamp fechaCrear; // Cambiado a Timestamp
-    private Timestamp fechaActualizar; // Cambiado a Timestamp
+    private Timestamp fechaCrear;
+    private Timestamp fechaActualizar;
 
+    /**
+     * Constructor que inicializa un objeto Producto con todos sus atributos.
+     * 
+     * @param id El ID del producto.
+     * @param nombre El nombre del producto.
+     * @param cantidad La cantidad del producto.
+     * @param precio El precio del producto.
+     * @param fechaCrear La fecha de creación del producto.
+     * @param fechaActualizar La fecha de actualización del producto.
+     */
     public Producto(int id, String nombre, double cantidad, double precio, Timestamp fechaCrear, Timestamp fechaActualizar) {
         this.id = id;
         this.nombre = nombre;
@@ -21,8 +34,11 @@ public class Producto {
         this.fechaActualizar = fechaActualizar;
     }
 
+    /**
+     * Constructor vacío que inicializa la fecha de creación al momento actual.
+     */
     public Producto() {
-        this.fechaCrear = new Timestamp(System.currentTimeMillis()); // Establecer la fecha actual
+        this.fechaCrear = new Timestamp(System.currentTimeMillis());
         this.fechaActualizar = null;
     }
 
@@ -74,6 +90,11 @@ public class Producto {
         this.fechaActualizar = fechaActualizar;
     }
 
+    /**
+     * Obtiene la fecha de creación formateada como un String.
+     * 
+     * @return La fecha de creación en formato legible.
+     */
     public String getFechaCrearFormateada() {
         if (fechaCrear != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d 'de' MMMM 'de' yyyy 'a las' HH:mm:ss");
@@ -83,6 +104,11 @@ public class Producto {
         }
     }
 
+    /**
+     * Obtiene la fecha de actualización formateada como un String.
+     * 
+     * @return La fecha de actualización en formato legible.
+     */
     public String getFechaActualizarFormateada() {
         if (fechaActualizar != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d 'de' MMMM 'de' yyyy 'a las' HH:mm:ss");
