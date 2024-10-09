@@ -22,8 +22,8 @@ public class Producto {
     }
 
     public Producto() {
-        this.fechaCrear = new Date(); // Fecha de creación establecida automáticamente
-        this.fechaActualizar = null; // Fecha de actualización puede ser nula inicialmente
+        this.fechaCrear = new Date();
+        this.fechaActualizar = null;
     }
 
     public int getId() {

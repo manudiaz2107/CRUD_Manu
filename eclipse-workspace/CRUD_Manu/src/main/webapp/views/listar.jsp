@@ -1,168 +1,188 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Lista de Productos</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f2f2f2;
-        }
+<meta charset="UTF-8">
+<title>Lista de Productos</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f2f2f2;
+}
 
-        .container {
-            width: 80%;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
+.container {
+	width: 80%;
+	margin: 50px auto;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
 
-        h1 {
-            text-align: center;
-            color: #333;
-        }
+h1 {
+	text-align: center;
+	color: #333;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
 
-        table, th, td {
-            border: 1px solid #ddd;
-        }
+table, th, td {
+	border: 1px solid #ddd;
+}
 
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
+th, td {
+	padding: 12px;
+	text-align: left;
+}
 
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
+th {
+	background-color: #4CAF50;
+	color: white;
+}
 
-        a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
+a {
+	color: #4CAF50;
+	text-decoration: none;
+}
 
-        .action a {
-            color: red;
-            font-weight: bold;
-        }
+.action a {
+	color: red;
+	font-weight: bold;
+}
 
-        .add-product-btn {
-            margin-top: 20px;
-            text-align: center;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+.add-product-btn {
+	margin-top: 20px;
+	text-align: center;
+	background-color: #4CAF50;
+	color: white;
+	padding: 10px;
+	border-radius: 5px;
+	cursor: pointer;
+}
 
-        .add-product-btn:hover {
-            background-color: #45a049;
-        }
+.add-product-btn:hover {
+	background-color: #45a049;
+}
 
-        .form-container {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-        }
+.form-container {
+	display: none;
+	margin-top: 20px;
+	padding: 20px;
+	background-color: #f9f9f9;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
 
-        input[type="text"], input[type="number"] {
-            width: 95%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+input[type="text"], input[type="number"] {
+	width: 95%;
+	padding: 8px;
+	margin-top: 5px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
 
-        input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+input[type="submit"], .btn-volver {
+	width: 100%;
+	padding: 10px;
+	margin-top: 20px;
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
 
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
+input[type="submit"]:hover, .btn-volver:hover {
+	background-color: #45a049;
+}
 
-    </style>
+.btn-volver {
+	background-color: #007BFF; /* Color azul para el botón volver */
+}
+
+.btn-volver:hover {
+	background-color: #0056b3;
+	/* Color azul más oscuro al pasar el ratón */
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Lista de Productos</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Cantidad</th>
-                    <th>Precio</th>
-                    <th>Fecha de Creación</th>
-                    <th>Fecha de Actualización</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="producto" items="${lista}">
-                    <tr>
-                        <td>${producto.id}</td>
-                        <td>${producto.nombre}</td>
-                        <td>${producto.cantidad}</td>
-                        <td>${producto.precio}</td>
-                        <td>${producto.fechaCrearFormateada}</td>
-                        <td>${producto.fechaActualizarFormateada}</td>
-                        <td class="action">
-                            <button><a href="productos?opcion=editar&id=${producto.id}">Editar</a></button>
-                            <button><a href="productos?opcion=eliminar&id=${producto.id}" onclick="return confirm('¿Estás seguro de eliminar este producto?')">Eliminar</a></button>
-                        </td>
-                    </tr>
-                </c:forEach>
-            </tbody>
-        </table>
+	<div class="container">
+		<h1>Lista de Productos</h1>
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Nombre</th>
+					<th>Cantidad</th>
+					<th>Precio</th>
+					<th>Fecha de Creación</th>
+					<th>Fecha de Actualización</th>
+					<th>Acción</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="producto" items="${lista}">
+					<tr>
+						<td>${producto.id}</td>
+						<td>${producto.nombre}</td>
+						<td>${producto.cantidad}</td>
+						<td>${producto.precio}</td>
+						<td>${producto.fechaCrearFormateada}</td>
+						<td>${producto.fechaActualizarFormateada}</td>
+						<td class="action">
+							<button>
+								<a href="productos?opcion=editar&id=${producto.id}">Editar</a>
+							</button>
+							<button>
+								<a href="productos?opcion=eliminar&id=${producto.id}"
+									onclick="return confirm('¿Estás seguro de eliminar este producto?')">Eliminar</a>
+							</button>
+						</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
 
-        <div class="add-product-btn" onclick="mostrarFormulario()">Añadir nuevo producto</div>
+		<div class="add-product-btn" onclick="mostrarFormulario()">Añadir
+			nuevo producto</div>
 
-        <div class="form-container" id="form-container">
-            <h2>Crear Nuevo Producto</h2>
-            <form action="productos" method="post" onsubmit="return validarFormulario()">
-                <input type="hidden" name="opcion" value="guardar">
-                <table>
-                    <tr>
-                        <td>Nombre:</td>
-                        <td><input type="text" name="nombre" required></td>
-                    </tr>
-                    <tr>
-                        <td>Cantidad:</td>
-                        <td><input type="number" name="cantidad" required min="1"></td>
-                    </tr>
-                    <tr>
-                        <td>Precio:</td>
-                        <td><input type="number" step="0.01" name="precio" required min="0.01"></td>
-                    </tr>
-                </table>
-                <input type="submit" value="Guardar">
-            </form>
-        </div>
-    </div>
+		<div class="form-container" id="form-container">
+			<h2>Crear Nuevo Producto</h2>
+			<form action="productos" method="post"
+				onsubmit="return validarFormulario()">
+				<input type="hidden" name="opcion" value="guardar">
+				<table>
+					<tr>
+						<td>Nombre:</td>
+						<td><input type="text" name="nombre" required></td>
+					</tr>
+					<tr>
+						<td>Cantidad:</td>
+						<td><input type="number" name="cantidad" required min="1"></td>
+					</tr>
+					<tr>
+						<td>Precio:</td>
+						<td><input type="number" step="0.01" name="precio" required
+							min="0.01"></td>
+					</tr>
+				</table>
+				<input type="submit" value="Guardar">
+			</form>
+		</div>
 
-    <script>
+		<button class="btn-volver" onclick="window.location.href='index.jsp'">Volver
+			al Índice</button>
+		<!-- Botón para volver al índice -->
+	</div>
+
+	<script>
         function mostrarFormulario() {
             const formContainer = document.getElementById("form-container");
             if (formContainer.style.display === "none" || formContainer.style.display === "") {
